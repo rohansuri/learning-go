@@ -14,8 +14,10 @@ Important points extracted out from "A Tour of Go"
 
 * Function can return multiple results
 
-* Function's return values can be named (to document results in a meaningful way), then requiring no explicit return statement.  
+* Function's return values can be named (to document results in a meaningful way)  
 	*func add(x, y int) (result int)*
+	
+	Thereby no need to name them explicitly in the return statement (but the return keyword is still needed)
 
 
 * var declarations can also initialise variables then and there thereby not requiring explicit type declaration.  
@@ -60,6 +62,108 @@ func add(x, y int) (sum int) {
 
 * Deferred function calls are executed after the surrounding function returns. Multiple defers are stacked.
 
+## More types
+
+#### Pointers
+
+* Go has pointers. Using * to dereference and & address-of.
+	Pointers hold memory address of a value.
+	
+* Zero value is *nil*
+
+* No pointer arithmetic is permitted.
+	
+#### Structs
+
+* Structs hold many fields (POJOs essentially) 
+```
+type Vertex struct {
+	X int
+	Y int
+}
+```
+
+* Members could be accessed directly using dot operator
+
+
+* Structs are constructed using struct literals  
+	*Vertex{1,2}*  
+	*Vertex{X:1}* // Y is 0 implicitly
+	
+* Accessing struct fields using a pointer can also be done using the dot operator (rather than the cubersome (*p).X)
+	
+#### Arrays
+* Array declaration type is of the form *[n]T*
+
+* Arrays are of fixed size, zero indexed.
+
+* oddNos := [4]int{1, 3, 5, 7} is an array
+
+#### Slices
+* Slice declaration type is of the form *[ ]T*
+
+* Slices are dynamically-sized view of arrays (references to a portion of the array)
+
+* Obtain a slice using a[low: high], high isn't included.  
+	You may omit low or high or both and defaults (0, length) will be used.
+
+* var firstTwo []int = oddNos[0:3] // [1, 3]
+
+* Modifying a slice modifies the underlying array and all other slices that cover the same modified range. 
+
+* *naturalNos := []int{1, 2, 3}* creates an array and returns a slice reference to it  
+	*naturalNos = naturalNos[:2]* // [1, 2]  
+	*naturalNos = naturalNos [1:]* // [2]  
+
+* Slice has a length as well as a capacity.  
+	* length is number of elements that come under the slice
+	* capacity is number of elements present in the underlying array starting from current slice
+	
+	```
+	s := []int{1, 2, 3, 4}
+	len(s) is 4
+	cap(s) is 4
+	
+	s = s[:2]
+	len(s) is 2
+	cap(s) is 4
+	
+	s = s[:4] // extend the slice's length
+	len(s) is 4
+	cap(s) is 4
+	
+	s = s[2:] // drop first two elements, therefore capacity reduced by 2
+	len(s) is 2
+	cap(s) is 2
+	```
+* To create a dynamically-sized array we use built-in *make* function.  
+	It allocates a zeroed array and a slice reference to it.   
+	*darr := make(int[], 5)* // len = 5
+	
+* We got dynamic arrays, now how do we add elements to it?  
+	Using built-in *append* function.  
+	```
+	var s []int
+	s = s.append(s, 1)
+	s = s.append(s, 2, 3, 4)
+	```
+	It takes the slice and list of elements to be added, returning a slice.  
+	Returns a slice to a bigger array if required.
+	
+* If time to spare, go through [Slice internals blog](https://blog.golang.org/go-slices-usage-and-internals)
+
+
+#### Range
+
+* Ranging for loop over slices returns two values -- index and copy of element at that index
+```
+	for index, value := range array {
+		// do something
+	}
+```
+
+* If index not required then an underscore can be placed instead of it.
+
 ## Questions
 
-* Why do I have to type var to declare variables?
+* Do we have access specifiers in Go?

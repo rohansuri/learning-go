@@ -2,6 +2,16 @@ Packages hello and stringutil created as followed from the "How to Write Go Code
 
 ### Learnings:
 
+*	One workspace as defined by $GOPATH (default is $HOME/go)  
+	Inside which you have /src and /bin.  
+	Inside of src you have multiple repos, which in turn contain many packages.  
+	There isn't any restriction on the go file name, but package name should be last directory folder in the import path. 
+	
+* 	*go cli tool* is a
+	*  build tool
+	* test tool (go test, runs files suffixed by _test.go)
+	* dependency management tool (go get)
+
 * 	1 folder = 1 executable  
 	i.e. you cannot have more than one main entry points in a single import path (also [see](https://www.reddit.com/r/golang/comments/35ntmp/how_to_sort_your_projects_in_one_folder_without/))
 
