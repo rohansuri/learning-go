@@ -1,9 +1,8 @@
 Important points extracted out from "A Tour of Go"
 
 ## Basics
----
 
-### Declaring types and identifiers
+#### Declaring types and identifiers
 
 * A name is exported if it begins with a capital letter.
 
@@ -31,7 +30,7 @@ func add(x, y int) (sum int) {
 }
 ```
 
-### Basic types
+#### Basic types
 
 * int, uint are 32bits on 32bit systems and 64bit on 64bit systems.  
 	For system independent integers we have int32, int64, etc.
@@ -39,7 +38,7 @@ func add(x, y int) (sum int) {
 * Amongst the usual basic types, string and runes are basic types too in Go.  
 	Rune is an alias for int32, representing a Unicode code point (code point is a numeric value from the Unicode space)
 
-### Type conversion
+#### Type conversion
 
 * Expressions T(v) are type conversion expressions which convert v to type T.  
 	These are always explicitly needed.
@@ -50,12 +49,10 @@ func add(x, y int) (sum int) {
 	fmt.Println(div)
 	```
 
-### Constant declaration:  
+#### Constant declaration:  
 * const Pi = 3.14
-* 
 
 ## Flow control 
----
 
 * Syntax for if conditionals and for loops do not require parentheses but do require the body always be enclosed in {}
 
@@ -64,6 +61,5 @@ func add(x, y int) (sum int) {
 * Deferred function calls are executed after the surrounding function returns. Multiple defers are stacked.
 
 ## Questions
----
 
-Why do I have to type var to declare variables?
+* Why do I have to type var to declare variables?
