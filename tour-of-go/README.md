@@ -1,5 +1,25 @@
 Important points extracted out from "A Tour of Go"
 
+## Table of contents
+
+* [Basics](#basics)
+	* [Declaring types and identifiers](#declaring-types-and-identifiers)
+	* [Basic types](#basic-types)
+    * [Type conversion](#type-conversion)
+    * [Constant declaration](#constant-declaration)
+* [Flow control ](#flow-control)
+* [More types](#more-types)
+	* [Pointers](#pointers)
+	* [Structs](#structs)
+	* [Arrays](#arrays)
+	* [Slices](#slices)
+	* [Range](#range)
+	* [Map](#map)
+	* [Functions](#functions)
+	* [Closures](#closures)
+* [Questions](#questions)
+
+
 ## Basics
 
 #### Declaring types and identifiers
@@ -52,7 +72,7 @@ func add(x, y int) (sum int) {
 	fmt.Println(div)
 	```
 
-#### Constant declaration:  
+#### Constant declaration
 * const Pi = 3.14
 
 ## Flow control 
@@ -170,7 +190,7 @@ type Vertex struct {
 * Creating a map is done using built-in *make(map[keyType]valueType)* function
 
 * Similar to struct literals, we have map literals.  
-  ```
+```
 idToPersonMap := map[int]Person {
 		1: Person {name: "Leo"},
 		2: {name: "Cristiano"} // it is ok to omit the struct type name
@@ -186,6 +206,39 @@ idToPersonMap := map[int]Person {
 * Test if a key is present using two-value assignment  
   *value, isPresent := map[key]* // if absent then value is the appropriate zero-value
 
+#### Functions
+
+* Functions are values too i.e. they can be passed as arguments or returned from functions.
+
+
+#### Closures
+* Closures are functions in Go which access, assign, reference variables from outside it's own body.
+
+
+
 ## Questions
 
 * Do we have access specifiers in Go?
+
+* Does Go compile to machine-specific assembly?
+
+* How does multiple assignment work without overwriting each other?  
+	For example in fibonacci, this works  
+	 *a, b = b, a + b*  
+	
+  Go inspects this statement involving multiple assignments, where an assignment includes accessing a variable that in turn got assigned before in the same statement.  
+Seeing this, it generates the required temporary variables.
+
+```
+        0x0008 00008 (exercise-fibonacci-closure.go:10) MOVQ    (CX), DX
+        0x000b 00011 (exercise-fibonacci-closure.go:10) MOVQ    (AX), BX
+        0x000e 00014 (exercise-fibonacci-closure.go:10) MOVQ    DX, (AX)
+        0x0011 00017 (exercise-fibonacci-closure.go:10) ADDQ    BX, DX
+        0x0014 00020 (exercise-fibonacci-closure.go:10) PCDATA  $2, $4
+        0x0014 00020 (exercise-fibonacci-closure.go:10) MOVQ    DX, (CX)
+        
+        where line 10 is:
+        a, b = b, a + b
+        
+        (generated using go tool compile -S exercise-fibonacci-closure.go)
+```
