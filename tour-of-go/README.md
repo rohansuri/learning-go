@@ -29,6 +29,7 @@ Important points extracted out from "A Tour of Go"
 ```
 func add(x, y int) (sum int) {
 	sum := x + y
+	return
 }
 ```
 
@@ -157,12 +158,33 @@ type Vertex struct {
 
 * Ranging for loop over slices returns two values -- index and copy of element at that index
 ```
-	for index, value := range array {
+	for index, value := range slice {
 		// do something
 	}
 ```
 
 * If index not required then an underscore can be placed instead of it.
+
+#### Map
+
+* Creating a map is done using built-in *make(map[keyType]valueType)* function
+
+* Similar to struct literals, we have map literals.  
+  ```
+idToPersonMap := map[int]Person {
+		1: Person {name: "Leo"},
+		2: {name: "Cristiano"} // it is ok to omit the struct type name
+	}
+```
+
+* Insert in a map *m[key] = value*
+
+* Retrieve a value from the map using *value = m[key]*
+
+* Delete a key in a map using function *delete(map, key)*
+
+* Test if a key is present using two-value assignment  
+  *value, isPresent := map[key]* // if absent then value is the appropriate zero-value
 
 ## Questions
 
