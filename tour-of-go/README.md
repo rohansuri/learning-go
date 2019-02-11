@@ -132,6 +132,8 @@ type Vertex struct {
 
 * Slices are dynamically-sized view of arrays (references to a portion of the array)
 
+  They really are a pointer to an array (debug a slice in a running program and see)
+
 * Obtain a slice using `a[low: high]`, high isn't included.  
 	You may omit low or high or both and defaults (0, length) will be used.
 
@@ -223,6 +225,7 @@ idToPersonMap := map[int]Person {
 
 #### Closures
 * Closures are functions in Go which access, assign, reference variables from outside it's own body.
+
 
 ## Methods and Interfaces
 
@@ -367,6 +370,50 @@ i.Foo() // runtime error
 	}
 	```
 
+#### Errors
+
+* Errors are expressed using values of `error` type.
+
+* `error` is a built-in interface type defined as  
+```go
+type error interface {
+	Error() string
+}
+```
+* To indicate errors, functions usually return an `error` type which is `nil` if there's no error, otherwise it has a value.
+```go
+type ErrNegativeSqrt float64
+
+func (e ErrNegativeSqrt) Error() string {
+	return fmt.Sprintf("cannot sqrt a negative number: %v", float64(e))
+	/* 
+		if instead of float64 you supply e itself
+		you go into an infinite recursion.
+		fmt looks if the value supplied implements error,
+		if it does then it invokes the Error() method on it.
+		we're already inside the Error() method here and
+		therefore the recursion.
+	 */
+}
+func Sqrt(x float64) float64, error {
+	if x < 0 {
+			return 0, ErrNegativeSqrt(x)
+	}
+	return math.Sqrt(x)
+}
+
+x, err := Sqrt(float64(-1))
+if err != nil {
+	fmt.Println(x)
+}
+```
+
+#### Built-ins
+
+* Methods like `make, append` and types like `float64, error` and others are all part of package `builtin`.  
+See the [docs](https://golang.org/pkg/builtin/) for a comprehensive list of types and functions.
+
+* This is not actually a package, just a set of predeclared Go identifiers.
 
 ## Questions
 
