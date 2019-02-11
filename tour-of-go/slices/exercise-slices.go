@@ -1,8 +1,4 @@
-package main
-
-import (
-	"golang.org/x/tour/pic"
-)
+package slices
 
 func Pic(dx, dy int) (pic [][]uint8) {
 	pic = allocate(dx, dy)
@@ -31,8 +27,4 @@ func allocate(dx, dy int) (pic [][]uint8) {
 		pic[i] = make([]uint8, dx)
 	}
 	return
-}
-
-func main() {
-	pic.Show(Pic)
 }
