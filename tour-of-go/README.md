@@ -22,6 +22,8 @@ Important points extracted out from "A Tour of Go"
 	* [Interfaces](#interfaces)
 	* [Empty interface](#empty-interface)
 	* [Type assertion](#type-assertion)
+	* [Errors](#errors)
+	* [Built-ins](#built-ins)
 * [Questions](#questions)
 
 
