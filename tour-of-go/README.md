@@ -24,6 +24,12 @@ Important points extracted out from "A Tour of Go"
 	* [Type assertion](#type-assertion)
 	* [Errors](#errors)
 	* [Built-ins](#built-ins)
+* [Concurrency](#concurrency)
+  * [Goroutines](#goroutines)
+  * [Channels](#channels)
+  * [Buffered channels](#buffered-channels)
+  * [Closing a channel](#closing-a-channel)
+  * [Select](#select)
 * [Questions](#questions)
 
 
@@ -417,9 +423,101 @@ See the [docs](https://golang.org/pkg/builtin/) for a comprehensive list of type
 
 * This is not actually a package, just a set of predeclared Go identifiers.
 
+## Concurrency
+
+#### Goroutines
+
+* Goroutines are lightweight threads managed by the Go runtime itself.
+
+* Goroutines like threads share address space of the same process and hence require synchronization in accessing memory.
+
+* `sync` package contains synchronization utilites, but Go has better and easier to use higher level primitives.
+
+#### Channels
+
+* Channels are conduits (pipes) through which you send and receive values using the channel operator `<-`
+
+* By default sends and receives block until the other side is ready. 
+
+```go
+  ch := make(chan int)
+  go func() {
+     time.Sleep(3000 * time.Millisecond)
+     fmt.Println(<-ch)
+  }()
+  fmt.Println("Sending 5")
+  ch <- 5 // blocks for 3 seconds until the other Goroutine consumes the 5
+  fmt.Println("Done")
+```
+
+#### Buffered channels
+
+* A buffered channel can be created that blocks the sends only when buffer is full and blocks the receives only when the buffer is empty.  
+  ` ch := make(chan int, 100)`
+
+#### Closing a channel
+
+* The sender Goroutine can close the channel after the sends are complete by calling   
+`close(ch)`  
+  
+	Receiver can check if channel is closed by using the two value expression  
+	 `v, ok := <-ch`
+
+* Range over a channel keeps receiving values until the channel is closed.  
+  `for v := range ch`
+
+* Closing a channel is not a must but is only an indicator to the receiver about no more values being produced.
+
+#### Select
+
+* Select statement lets a goroutine wait on multiple communication operations.
+
+* It unblocks when any of its cases can run and executes any one of them arbitarily.
+
+```go
+func generateNaturalNumbers(c, quit chan int) {
+	for i := 0; ; i++ {
+		select {
+			case c <- i:
+			case <-quit:
+			  return
+		}
+	}
+}
+
+c := make(chan int)
+quit := make(chan int)
+go generateNaturalNumbers(c, quit)
+for i := 0; i < n; i++ {
+	fmt.Println(<-c)
+}
+quit<-0
+```
+
+* A default case is run if no other case is ready.  
+  This is useful to attempt a send or receive without blocking.
+
+	```go
+	var x int
+	select {
+		case x <- someChan:
+		  fmt.Println("received ", x)
+		default:
+		  fmt.Println("nothing to receive yet")
+	}
+	```
+
 ## Questions
 
 * Do we have access specifiers in Go?
+
+* What's the implementation behind channels? Is it analogous to Java's BlockingQueue?
+
+* What's the advantage of Go's CSP style concurrency?
+
+* How do you do a non blocking channel wait?
+
+* How channels "allows goroutines to synchronize without explicit locks or condition variables" ?
 
 * Go passes arguments to functions as pass-by-value?
 
@@ -433,7 +531,8 @@ See the [docs](https://golang.org/pkg/builtin/) for a comprehensive list of type
 	For example in fibonacci, this works  
 	 *a, b = b, a + b*  
 	
-  Go inspects this statement involving multiple assignments, where an assignment includes accessing a variable that in turn got assigned before in the same statement.  
+	A:   
+	Go inspects this statement involving multiple assignments, where an assignment includes accessing a variable that in turn got assigned before in the same statement.  
 Seeing this, it generates the required temporary variables.
 
 ```
@@ -449,3 +548,7 @@ Seeing this, it generates the required temporary variables.
         
         (generated using go tool compile -S exercise-fibonacci-closure.go)
 ```
+
+## TODO
+
+* Try equivalent channel constructs in Java and bring out how Go makes concurrency easy.
