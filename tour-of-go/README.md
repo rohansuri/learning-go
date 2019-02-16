@@ -521,6 +521,22 @@ quit<-0
 
 * The args are logged to an error log and printed only if test fails
 
+## Addendum
+
+#### Ellipsis
+
+* Ellipsis in syntax are three dots together `...`
+
+* Out of its 4 usages, it's most helpful usages are when receiving variadic parameters in functions and the other is to unpack slices when passing them to variadic functions.
+
+```go
+	// prepend to a slice example
+	x := []int {1, 2, 3}
+	x = append([]int {0}, x) // won't work, append wants variadic arguments
+
+	x = append([]int{0}, x...) // unpacks slice requiring no copy
+```
+
 ## Questions
 
 * Do we have access specifiers in Go?
@@ -530,6 +546,9 @@ quit<-0
 * What's the advantage of Go's CSP style concurrency?
 
 * How do you do a non blocking channel wait?
+
+  A:  
+	Use select over the channels
 
 * How channels "allows goroutines to synchronize without explicit locks or condition variables" ?
 
