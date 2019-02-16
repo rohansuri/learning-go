@@ -1,7 +1,6 @@
 package concurrency
 
 import "golang.org/x/tour/tree"
-import "fmt"
 
 // Walk walks the tree t sending all values
 // from the tree to the channel ch.
