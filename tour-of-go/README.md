@@ -519,6 +519,8 @@ quit<-0
 
 * How channels "allows goroutines to synchronize without explicit locks or condition variables" ?
 
+* Diagnostic tools (profilers, etc) to see goroutine's stack trace, etc.
+
 * Go passes arguments to functions as pass-by-value?
 
 * Does Go compile to machine-specific assembly?
