@@ -30,6 +30,8 @@ Important points extracted out from "A Tour of Go"
   * [Buffered channels](#buffered-channels)
   * [Closing a channel](#closing-a-channel)
   * [Select](#select)
+* [Exploring packages](#exploring-packages)
+  * [pkg testing](#pkg-testing)
 * [Questions](#questions)
 
 
@@ -506,6 +508,18 @@ quit<-0
 		  fmt.Println("nothing to receive yet")
 	}
 	```
+
+## Exploring packages
+
+#### pkg testing
+
+* `t.Fail()` marks the test as failed but continues execution
+
+* `t.Error(args ...interface{})` is equivalent to logging the args and calling `t.Fail()`
+
+* `t.Fatal(args ...interface{})` is equivalent to logging the args and calling `t.FailNow()`
+
+* The args are logged to an error log and printed only if test fails
 
 ## Questions
 
