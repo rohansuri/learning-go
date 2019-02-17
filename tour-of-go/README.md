@@ -32,6 +32,8 @@ Important points extracted out from "A Tour of Go"
   * [Select](#select)
 * [Exploring packages](#exploring-packages)
   * [pkg testing](#pkg-testing)
+* [Addendum](#addendum)
+  * [Ellipsis](#ellipsis)
 * [Questions](#questions)
 
 
@@ -194,6 +196,7 @@ type Vertex struct {
 	
 * If time to spare, go through [Slice internals blog](https://blog.golang.org/go-slices-usage-and-internals)
 
+* TODO add any important must-know slice tricks from [here](https://github.com/golang/go/wiki/SliceTricks)
 
 #### Range
 
@@ -508,6 +511,16 @@ quit<-0
 		  fmt.Println("nothing to receive yet")
 	}
 	```
+
+#### pkg sync
+
+The package has synchronization primitives to offer like
+
+* mutex
+* RWMutex (similar to ReadWriteLock)
+* condition variables
+* wait groups (similar to CountDownLatch)
+* Map safe for concurrent use
 
 ## Exploring packages
 
