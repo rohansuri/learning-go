@@ -534,6 +534,23 @@ The package has synchronization primitives to offer like
 
 * The args are logged to an error log and printed only if test fails
 
+* This package also runs and verifies example code.  
+  
+	Examples are helpful code snippets to document usage of a type, function, method.
+
+	Their identifier name starts with ExampleXxx and bodies must end with a comment that contains the expected stdout to match.
+
+	The source file name is of form `example_<for>_test.go`
+
+	If no comment is added, then the test is not ran.
+
+```go
+	func ExampleHello() {
+		fmt.Println("hello")
+		// Output: hello
+	}
+```
+
 ## Addendum
 
 #### Ellipsis
@@ -549,6 +566,29 @@ The package has synchronization primitives to offer like
 
 	x = append([]int{0}, x...) // unpacks slice requiring no copy
 ```
+
+#### Commentary
+
+* `godoc` extracts comments that appear before top-level declarations with no intervening newlines along with the declaration to serve as doc for them.
+
+* packages usually have a block comment before their declaration in any one source file or as per convention have a `doc.go` source file with only the package declaration. 
+
+* As per convention the first doc comment sentence should start with the name being declared and it should be a one-sentence summary.
+
+  Package foo provides foo  
+	Writer writes a string to console
+
+* View generated godoc locally by running `godoc <package-import-path>` from cli.
+
+* For more [see.](https://golang.org/doc/effective_go.html#commentary)
+
+#### Packages
+
+* If there's only a single package present in a directory, then not having a folder for the package is fine.
+
+  Example.   
+  If import path /a/b/c contains files only under `package foo` then you don't need the directory structure to be /a/b/c/foo.  
+  However if a source file is added under `package fooz`, then you need to move them under their respective folders, /a/b/c/foo and /a/b/c/fooz.
 
 ## Questions
 
