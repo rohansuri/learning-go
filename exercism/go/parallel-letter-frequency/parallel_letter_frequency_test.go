@@ -74,13 +74,9 @@ func distributeTasks(text string) chan FreqMap {
 
 	taskLength := len(text) / noOfTasks
 
-	// more cores than task length
-	// use one core per task of length 1
-	// overkill ?
-	// rather use only one core for the entire string?
-	if taskLength == 0 {
-		noOfTasks = len(text)
-		taskLength = 1
+	// no need to parallelize
+	if taskLength < 0 {
+		noOfTasks = 1
 	}
 
 	// buffered channel to let tasks finish up without waiting for main to consume it's result.
