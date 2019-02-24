@@ -1,0 +1,6 @@
+*.test
+*.debug
+
+.vscode/
+
+.exercism/
