@@ -117,7 +117,7 @@ func TestEdgeCases(t *testing.T){
 	table := [][]string {
 		{},
 		{"a"},
-		{"ab", "bb"},
+		{strings.Repeat("a", runtime.NumCPU())},
 	}
 
 	for _, testCase := range table {
