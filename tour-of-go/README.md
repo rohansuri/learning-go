@@ -614,6 +614,20 @@ The package has synchronization primitives to offer like
   If import path /a/b/c contains files only under `package foo` then you don't need the directory structure to be /a/b/c/foo.  
   However if a source file is added under `package fooz`, then you need to move them under their respective folders, /a/b/c/foo and /a/b/c/fooz.
 
+#### Errors naming convention
+
+* Error types end with "Error"  
+  Error variables start with "Err"
+
+	```go
+  // ParseError is type of error returned when there's a parsing problem.
+  type ParseError struct {
+      Line, Col int
+  }
+
+  var ErrBadAction = errors.New("somepkg: a bad action was performed")
+	```
+
 ## Questions
 
 * Do we have access specifiers in Go?
