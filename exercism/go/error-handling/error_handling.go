@@ -1,39 +1,38 @@
 package erratum
 
 import (
-	"os"
-	"time"
 	"log"
+	"os"
 )
 
 var info = log.New(os.Stdout, "INFO: ", log.LstdFlags | log.Lshortfile)
-const retry = 0 * time.Second
 
 func Use(o ResourceOpener, input string) (err error) {
 	var resource Resource
 
-	// while resource fails to open
-	for {
-		resource, err = o()
-		if _, ok := err.(TransientError); ok {
+	// open the resource for the first time
+	// semantically should be out of the loop
+	resource, err = o()
 
-			info.Printf("A transient error has occurred. " +
-				"Will sleep for %v seconds and retry.\n", retry.Seconds())
+	// if resource fails to open, we have to retry
+	for err != nil {
 
-			time.Sleep(retry)
-
-		} else if err != nil { // not a transient error
+		if _, ok := err.(TransientError); !ok {
 			return err
-		} else {
-			break
 		}
+
+		info.Printf("A transient error has occurred. " +
+			"Will retry opening the resource.\n")
+
+		resource, err = o()
 	}
 
 	defer func() {
 		// try closing, but if close fails, let's not lose the very first
-		// error we got
+		// error we got.
 		// best way would be to form a chain of errors?
 		// but close's failure wouldn't necessarily be caused-by the panic
+		// Java's equivalent of this is suppressed exceptions
 		cerr := resource.Close()
 		if err == nil {
 			err = cerr
@@ -44,15 +43,11 @@ func Use(o ResourceOpener, input string) (err error) {
 	defer func() {
 		if r := recover(); r != nil {
 
-			switch e := r.(type) {
-
-				case FrobError:
-					resource.Defrob(e.defrobTag)
-					err = e
-
-				case error:
-					err = e
+			if frobErr, ok := r.(FrobError); ok {
+				resource.Defrob(frobErr.defrobTag)
 			}
+
+			err = r.(error)
 		}
 	}()
 
@@ -61,3 +56,4 @@ func Use(o ResourceOpener, input string) (err error) {
 
 	return
 }
+
