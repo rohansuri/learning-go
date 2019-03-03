@@ -575,6 +575,19 @@ The package has synchronization primitives to offer like
 	}
 ```
 
+#### pkg flag
+
+* Provides functions for command line flag parsing.
+
+  Equivalent of Java's System properties.
+
+* For example, in pkg testing/benchmark.go flag `test.benchtime` is used to configure running time for each benchmark.
+
+	```go
+	var benchTime = flag.Duration("test.benchtime", 1*time.Second, "run each benchmark for duration `d`")
+	```
+
+
 ## Addendum
 
 #### Ellipsis
