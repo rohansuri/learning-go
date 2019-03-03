@@ -131,7 +131,31 @@ type Vertex struct {
 	```
 
 * Accessing struct fields using a pointer can also be done using the dot operator (rather than the cubersome `(*p).X`)
-	
+
+* Structs defined inside a function cannot have methods on them.
+
+	This would be useful to provide mocked behaviours on a per test basis for a particular interface.
+
+	```go
+		func testFoo(t *testing.T) {
+			type mock struct {}
+			func (f mock) Foo(){...} // not allowed
+		}
+  ```
+	We rather define the struct outside and change it's mock behaviour per test as suited leveraging Go's first class functions.
+
+	```go
+	type mock struct {
+		foo func ()
+	}
+	func (m mock) Foo() { m.foo() } // delegate to provided mocked function
+	func testFoo(t *testing.T){
+		mock {foo: func() {...}} // mocking behaviour changes per test
+	}
+
+	```
+
+
 #### Arrays
 * Array declaration type is of the form `[n]T`
 
