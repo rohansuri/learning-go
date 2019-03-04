@@ -78,6 +78,16 @@ func add(x, y int) (sum int) {
 * Amongst the usual basic types, `string` and `rune` are basic types too in Go.  
 	`rune` is an alias for `int32`, representing a Unicode code point (code point is a numeric value from the Unicode space)
 
+* Remember:  
+  A for loop range over a string returns runes but an indexed access gives uint8 (a byte).
+
+	```go
+	for _, myrune := range someString // myrune is int32
+	for i := 0; i < len(someString); i++ {
+		someString[i] // uint8
+	}
+	```
+
 #### Type conversion
 
 * Expressions `T(v)` are type conversion expressions which convert v to type T.  
