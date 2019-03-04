@@ -18,10 +18,13 @@ while returning a channel back to caller for communication.
 func boring(msg string) <- chan string {
 	ch := make(chan string)
 
+	source := rand.NewSource(time.Now().UnixNano())
+	r := rand.New(source)
+
 	go func(){
 		for i := 1; ; i++ {
 			ch <- fmt.Sprintf("%s %d", msg, i)
-			time.Sleep(time.Duration(rand.Intn(1000)))
+			time.Sleep(time.Duration(r.Intn(2 * 1e3)) * time.Millisecond)
 		}
 	}()
 
