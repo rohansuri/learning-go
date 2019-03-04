@@ -89,3 +89,8 @@ func assertSequence(seq *int, item string){
 	}
 	*seq++
 }
+
+// test only to see stdout output
+func TestTimeoutUsingSelect(t *testing.T){
+	timedOutCommunication()
+}
