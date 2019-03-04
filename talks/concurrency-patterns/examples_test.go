@@ -138,3 +138,10 @@ func ExampleBoringQuitWithCleanup(){
 	// Messi 2
 	// Messi 3
 }
+
+func TestDaisyChain(t *testing.T){
+	gophers := 100000
+	if got := daisyChain(gophers); got != gophers{
+		log.Fatalf("Expected %d, Got %d", gophers, got)
+	}
+}
