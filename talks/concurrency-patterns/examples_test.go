@@ -5,6 +5,9 @@ import (
 	"log"
 	"net/http"
 	_ "net/http/pprof"
+	"strconv"
+	"strings"
+	"testing"
 )
 
 func init(){
@@ -51,18 +54,29 @@ func ExampleGeneratorAsAService(){
 	// Cristiano 3
 }
 
-func ExampleFanIn(){
+func TestFanIn(t *testing.T){
 	ch := fanIn(boring("Messi"), boring("Cristiano"))
 
-	for i := 0; i < 6; i++ {
-		fmt.Println(<-ch)
-	}
+	messiSeq, cristianoSeq := 1, 1
 
-	// Unordered output:
-	// Messi 1
-	// Cristiano 1
-	// Messi 2
-	// Cristiano 2
-	// Messi 3
-	// Cristiano 3
+	for i := 0; i < 6; i++ {
+		item := <-ch
+
+		if strings.Contains(item, "Messi"){
+			assertSequence(&messiSeq, item)
+		} else if strings.Contains(item, "Cristiano"){
+			assertSequence(&cristianoSeq, item)
+		} else {
+			log.Fatalf("Unknown user")
+		}
+
+		fmt.Println(item)
+	}
+}
+
+func assertSequence(seq *int, item string){
+	if strings.LastIndex(item, strconv.Itoa(*seq)) == -1 {
+		log.Fatalf("Expected seq: %d, Got %s", seq, item)
+	}
+	*seq++
 }
