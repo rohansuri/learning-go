@@ -54,8 +54,17 @@ func ExampleGeneratorAsAService(){
 	// Cristiano 3
 }
 
+func TestBasicFanIn(t *testing.T){
+	ch := basicFanIn(boring("Messi"), boring("Cristiano"))
+	testFanIn(ch)
+}
+
 func TestFanIn(t *testing.T){
 	ch := fanIn(boring("Messi"), boring("Cristiano"))
+	testFanIn(ch)
+}
+
+func testFanIn(ch <-chan string){
 
 	messiSeq, cristianoSeq := 1, 1
 
