@@ -94,3 +94,7 @@ func assertSequence(seq *int, item string){
 func TestTimeoutUsingSelect(t *testing.T){
 	timedOutCommunication()
 }
+
+func TestTimeoutWholeConversation(t *testing.T){
+	timeoutWholeConversation()
+}
