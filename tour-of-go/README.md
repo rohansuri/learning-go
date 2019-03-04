@@ -673,6 +673,9 @@ The package has synchronization primitives to offer like
 
 * Do we have access specifiers in Go?
 
+* What types are always passed by reference?  
+  A copy is not created when passed to functions or returned from them.
+
 * What's the implementation behind channels? Is it analogous to Java's BlockingQueue?
 
 * What's the advantage of Go's CSP style concurrency?
@@ -685,6 +688,9 @@ The package has synchronization primitives to offer like
 * How channels "allows goroutines to synchronize without explicit locks or condition variables" ?
 
 * Diagnostic tools (profilers, etc) to see goroutine's stack trace, etc.
+
+* Are Go's locks not reentrant?  
+  Is downgrading in case of RWMutex possible?
 
 * Go passes arguments to functions as pass-by-value?
 
