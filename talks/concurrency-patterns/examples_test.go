@@ -98,3 +98,43 @@ func TestTimeoutUsingSelect(t *testing.T){
 func TestTimeoutWholeConversation(t *testing.T){
 	timeoutWholeConversation()
 }
+
+// Question: shouldn't this main goroutine also wait for Messi goroutine to finish up?
+// Yes! that's our next example ExampleBoringQuitWithCleanup
+func ExampleBoringQuit(){
+	quit := make(chan bool)
+	ch := boringQuit("Messi", quit)
+
+	// listen for 3 times what Messi has to say
+	for i := 0; i < 3; i++ {
+		fmt.Println(<-ch)
+	}
+	// then quit
+	quit <- true
+
+	// Output:
+	// Messi 1
+	// Messi 2
+	// Messi 3
+}
+
+// Question: this is better, but how long should we wait for Messi's clean up?
+// there should be a timeout for that?
+func ExampleBoringQuitWithCleanup(){
+	quit := make(chan bool)
+	ch := boringQuitWithCleanup("Messi", quit)
+
+	// listen for 3 times what Messi has to say
+	for i := 0; i < 3; i++ {
+		fmt.Println(<-ch)
+	}
+	// then quit
+	quit <- true
+
+	<-quit // wait till Messi cleans up
+
+	// Output:
+	// Messi 1
+	// Messi 2
+	// Messi 3
+}
