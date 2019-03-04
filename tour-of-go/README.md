@@ -263,6 +263,24 @@ idToPersonMap := map[int]Person {
 #### Closures
 * Closures are functions in Go which access, assign, reference variables from outside it's own body.
 
+* Pitfall to be aware about when running closures as goroutines (Go FAQ):
+	```go
+	values := []string {"a", "b", "c"}
+	for _, value := range values {
+		go func() {fmt.Println(value)}()
+	}
+	```
+	One would expect the closures above to print a, b, c.  
+
+	It might, but it would be a rare occurrence and what's more likely is to get c, c, c.
+
+  Why?  
+	Every iteration of the loop uses the same instance of the variable `value ` and reassigns to it.  
+	Therefore,  all closures share that same variable and by the time they run, they might operate over values changed by the subsequent loop iterations.
+
+  Resolution:  
+	This could be solved by passing the variable as a parameter to closure.   
+	It might be fixed in the language later to create a new variable on every loop iteration.
 
 ## Methods and Interfaces
 
