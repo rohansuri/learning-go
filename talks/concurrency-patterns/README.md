@@ -38,9 +38,9 @@ Google I/O 2012 talk by Rob Pike on Concurrency Patterns in Go.
 
 ### Channels
 
-* Primitive to communicate between goroutines.
+* Primitive to _communicate_ between goroutines.
 
-* Other than being a send and receive operation, it is also a synchronisation operation since the communication happens with both sender and receiver in lockstep when their goroutines reach the channel operation statement and it becomes a synchronization point.
+* Other than being a send and receive operation, it is also a _synchronisation operation_ since the communication happens with both sender and receiver in lockstep when their goroutines reach the channel operation statement and it becomes a synchronization point.
 
 * Buffered channels remove the synchronization.
 
@@ -84,6 +84,9 @@ TODO try out all of these
 
 * SPIN model for verification of concurrent models.
 
+* Thread santizer by Google to detect data races.  
+  (seems to be succeeded by go race tool)
+
 
 ### Questions
 
@@ -91,7 +94,26 @@ TODO try out all of these
   We can't model the situation where we want a channel value from all the cases, with multiple go routines we could do that.  
   (put an example here)
 
-* Prioritizing cases in select statements (nested in defaults?)
+* Ordered communication in select statements.  
+
+  Essentially we're wanting to do a non blocking check on the channel and if nothing has arrived yet then another nb check on another channel and so on, essentially ordering our checks.  
+
+  To do this we'd need to:
+  ```go
+    select {
+        case <-ch1:
+        default:
+            select {
+                case <-ch2:
+                default:
+                    select {
+                        case <-ch3:
+                        default:
+                    }
+            }
+    }
+  ```
+  The reason for not offering this as a structure is to keep the language simple and avoid stretching the APIs.
 
 * Try writing some of the patterns in Java to bring out the ease Go gives.
 
