@@ -78,3 +78,14 @@ func TestConcurrentGoogleWithTimeout(t *testing.T) {
 		}
 	}
 }
+
+func TestConcurrentGoogleWithReplicas(t *testing.T) {
+	results := ConcurrentGoogleQueryToReplicas(query)
+	fmt.Println(results)
+	// every result must be one of the expected results
+	for _, result := range results {
+		if _, isPresent := expectedMap[result]; !isPresent {
+			t.Fatalf("Unexpected result %s", result)
+		}
+	}
+}
