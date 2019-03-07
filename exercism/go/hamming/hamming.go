@@ -4,11 +4,12 @@ import "errors"
 
 func Distance(a, b string) (int, error) {
 	if len(a) != len(b) {
-		return 0, errors.New("Hamming distance is only calculable for strands of equal length.")
+		return 0, errors.New("hamming distance is only calculable for strands of equal length")
 	}
+	brune := []rune(b)
 	distance := 0
-	for i := range a {
-		if a[i] != b[i] {
+	for i, arune := range a {
+		if arune != brune[i] {
 			distance++
 		}
 	}
