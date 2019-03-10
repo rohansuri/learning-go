@@ -88,11 +88,17 @@ func TestSequentialFrequency(t *testing.T) {
 	}
 }
 
-var randRune string
+var randRune1000000 string // 10^6
+var randRune100000 string  // 10^5
+var randRune10000 string   // 10^4
+var randRune1000 string    // 10^3
 
 func init() {
 	rand.Seed(time.Now().UnixNano())
-	randRune = randStringRunes(100000)
+	randRune100000 = randStringRunes(100000)
+	randRune1000 = randStringRunes(1000)
+	randRune10000 = randStringRunes(10000)
+	randRune1000000 = randStringRunes(1000000)
 }
 
 var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
@@ -105,32 +111,36 @@ func randStringRunes(n int) string {
 	return string(b)
 }
 
-func benchmarkSequentialFrequency(text string, b *testing.B) {
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		Frequency(&text)
+func benchmarkSequentialFrequency(text string) func(*testing.B) {
+	return func(b *testing.B) {
+		b.ResetTimer()
+		for i := 0; i < b.N; i++ {
+			Frequency(&text)
+		}
 	}
 }
 
-func BenchmarkSequentialFrequencySmall(b *testing.B) {
-	benchmarkSequentialFrequency(euro+dutch+us, b)
-}
-
-func BenchmarkSequentialFrequencyLarge(b *testing.B) {
-	benchmarkSequentialFrequency(randRune, b)
-}
-
-func benchmarkConcurrentFrequency(texts []string, b *testing.B) {
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		ConcurrentFrequency(texts)
+func benchmarkConcurrentFrequency(texts ...string) func(*testing.B) {
+	return func(b *testing.B) {
+		b.ResetTimer()
+		for i := 0; i < b.N; i++ {
+			ConcurrentFrequency(texts)
+		}
 	}
 }
 
-func BenchmarkConcurrentFrequencyLarge(b *testing.B) {
-	benchmarkConcurrentFrequency([]string{randRune}, b)
+func BenchmarkSequentialFrequency(b *testing.B) {
+	b.Run("exercism-given", benchmarkSequentialFrequency(euro+dutch+us))
+	b.Run("1000", benchmarkSequentialFrequency(randRune1000))
+	b.Run("10000", benchmarkSequentialFrequency(randRune10000))
+	b.Run("100000", benchmarkSequentialFrequency(randRune100000))
+	b.Run("1000000", benchmarkSequentialFrequency(randRune1000000))
 }
 
-func BenchmarkConcurrentFrequencySmall(b *testing.B) {
-	benchmarkConcurrentFrequency([]string{euro, dutch, us}, b)
+func BenchmarkConcurrentFrequency(b *testing.B) {
+	b.Run("exercism-given", benchmarkConcurrentFrequency(euro+dutch+us))
+	b.Run("1000", benchmarkConcurrentFrequency(randRune1000))
+	b.Run("10000", benchmarkConcurrentFrequency(randRune10000))
+	b.Run("100000", benchmarkConcurrentFrequency(randRune100000))
+	b.Run("1000000", benchmarkConcurrentFrequency(randRune1000000))
 }
