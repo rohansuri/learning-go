@@ -50,6 +50,7 @@ where is the gain?
 // ConcurrentFrequency counts the frequency of each rune in the given texts concurrently and returns the aggregate
 // as a FreqMap.
 func ConcurrentFrequency(texts []string) FreqMap {
+	// TODO: rather than a join, pass down the range to process over on the slice itself?
 	text := strings.Join(texts, "")
 
 	noOfTasks := runtime.NumCPU() - 1 // keep the main go routine for merging counts
