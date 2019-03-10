@@ -496,16 +496,20 @@ See the [docs](https://golang.org/pkg/builtin/) for a comprehensive list of type
 
 * By default sends and receives block until the other side is ready. 
 
-```go
-  ch := make(chan int)
-  go func() {
-     time.Sleep(3000 * time.Millisecond)
-     fmt.Println(<-ch)
-  }()
-  fmt.Println("Sending 5")
-  ch <- 5 // blocks for 3 seconds until the other Goroutine consumes the 5
-  fmt.Println("Done")
-```
+	```go
+		ch := make(chan int)
+		go func() {
+			time.Sleep(3000 * time.Millisecond)
+			fmt.Println(<-ch)
+		}()
+		fmt.Println("Sending 5")
+		ch <- 5 // blocks for 3 seconds until the other Goroutine consumes the 5
+		fmt.Println("Done")
+	```
+
+* Remember:  
+  Everything is a copy in Go.  
+	Therefore passing large structs on channels should be done via a pointer to the struct.
 
 #### Buffered channels
 
