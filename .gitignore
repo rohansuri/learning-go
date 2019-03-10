@@ -1,6 +1,10 @@
 *.test
 *.debug
 
+*.prof
+
+exercism/go/*/README.md
+
 .vscode/
 
 .exercism/
