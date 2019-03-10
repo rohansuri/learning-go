@@ -1,10 +1,12 @@
 package letter
 
 import (
+	"math/rand"
 	"reflect"
 	"runtime"
 	"strings"
 	"testing"
+	"time"
 )
 
 // In the separate file frequency.go, you are given a function, Frequency(),
@@ -50,71 +52,8 @@ func OriginalFrequency(s string) FreqMap {
 	return m
 }
 
-func wrapCallToFrequency(text string, ch chan <- FreqMap){
-	freq := Frequency(text)
-	ch <- freq
-}
-
-func mergeCounts(ch chan FreqMap) (freqMap FreqMap){
-	freqMap = make(FreqMap)
-
-	for i := 0; i < cap(ch); i++ {
-		freq := <-ch
-
-		for letter, count := range freq {
-			freqMap[letter] += count
-		}
-	}
-	return
-}
-
-func distributeTasks(text string) chan FreqMap {
-	// taskLength := int(math.Ceil(float64(len(text))/float64(runtime.NumCPU())))
-	noOfTasks := runtime.NumCPU()
-
-	taskLength := len(text) / noOfTasks
-
-	// no need to parallelize
-	if taskLength < 0 {
-		noOfTasks = 1
-	}
-
-	// buffered channel to let tasks finish up without waiting for main to consume it's result.
-	// since our main goroutine could be busy updating the merged frequency count
-	taskResults := make(chan FreqMap, noOfTasks)
-
-	// println("number of tasks: ", noOfTasks)
-	// println("task length: ", taskLength)
-	// println("size of channel:", cap(taskResults))
-
-	for i := 0; i < noOfTasks - 1; i++ {
-		task := text[i * taskLength : (i + 1) * taskLength]
-
-		go wrapCallToFrequency(task, taskResults)
-	}
-
-	if noOfTasks > 0 {
-		lastTask := text[(noOfTasks - 1) * taskLength:]
-		go wrapCallToFrequency(lastTask, taskResults)
-	}
-
-	return taskResults
-}
-
-func ConcurrentFrequency(texts []string) FreqMap {
-	// split total text into as many cores as you have (cpu bound task)
-
-	text := strings.Join(texts, "")
-
-	// println("Joined string ", text)
-
-	taskResults := distributeTasks(text)
-
-	return mergeCounts(taskResults)
-}
-
-func TestEdgeCases(t *testing.T){
-	table := [][]string {
+func TestEdgeCases(t *testing.T) {
+	table := [][]string{
 		{},
 		{"a"},
 		{strings.Repeat("a", runtime.NumCPU())},
@@ -126,7 +65,7 @@ func TestEdgeCases(t *testing.T){
 
 		expected := OriginalFrequency(strings.Join(testCase, ""))
 
-		if !reflect.DeepEqual(got, expected){
+		if !reflect.DeepEqual(got, expected) {
 			t.Fatalf("Expected %v; Got %v", expected, got)
 		}
 	}
@@ -141,21 +80,57 @@ func TestConcurrentFrequency(t *testing.T) {
 }
 
 func TestSequentialFrequency(t *testing.T) {
-	oSeq := OriginalFrequency(euro + dutch + us)
-	seq := Frequency(euro + dutch + us)
+	text := euro + dutch + us
+	oSeq := OriginalFrequency(text)
+	seq := Frequency(&text)
 	if !reflect.DeepEqual(oSeq, seq) {
 		t.Fatal("Frequency wrong result")
 	}
 }
 
-func BenchmarkSequentialFrequency(b *testing.B) {
+var randRune string
+
+func init() {
+	rand.Seed(time.Now().UnixNano())
+	randRune = randStringRunes(100000)
+}
+
+var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+
+func randStringRunes(n int) string {
+	b := make([]rune, n)
+	for i := range b {
+		b[i] = letterRunes[rand.Intn(len(letterRunes))]
+	}
+	return string(b)
+}
+
+func benchmarkSequentialFrequency(text string, b *testing.B) {
+	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		Frequency(euro + dutch + us)
+		Frequency(&text)
 	}
 }
 
-func BenchmarkConcurrentFrequency(b *testing.B) {
+func BenchmarkSequentialFrequencySmall(b *testing.B) {
+	benchmarkSequentialFrequency(euro+dutch+us, b)
+}
+
+func BenchmarkSequentialFrequencyLarge(b *testing.B) {
+	benchmarkSequentialFrequency(randRune, b)
+}
+
+func benchmarkConcurrentFrequency(texts []string, b *testing.B) {
+	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		ConcurrentFrequency([]string{euro, dutch, us})
+		ConcurrentFrequency(texts)
 	}
+}
+
+func BenchmarkConcurrentFrequencyLarge(b *testing.B) {
+	benchmarkConcurrentFrequency([]string{randRune}, b)
+}
+
+func BenchmarkConcurrentFrequencySmall(b *testing.B) {
+	benchmarkConcurrentFrequency([]string{euro, dutch, us}, b)
 }
